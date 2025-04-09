@@ -84,6 +84,15 @@
                 progressBarFull.style.width = 100 * progress + "%";
             }).then((instance) => {
                 unityInstance = instance;
+
+                setTimeout(() => {
+                    try {
+                        unityInstance.Module.WebXR.toggleAR();
+                    } catch (err) {
+                        console.warn("AR failed to launch automatically:", err);
+                    }
+                }, 500);
+
                 loadingBar.style.display = "none";
 
                 // 💥 Auto launch AR after short delay
