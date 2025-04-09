@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Unity WebGL Player | ammonite story</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <meta name="description" content="" />
+    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
     <style>
-        html, body {
+        body, html {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            width: 100%;
-            height: 100%;
-            background: black;
+            background: #000;
         }
 
-        #unity-canvas {
-            width: 100%;
-            height: 100%;
-            position: absolute;
+        #unity-footer,
+        #unity-loading-bar {
+            display: none !important; /* Hide UI elements */
+        }
+
+        #unity-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
             top: 0;
             left: 0;
         }
 
-        #unity-container, #unity-loading-bar, #unity-footer {
-            display: none; /* Hide everything except canvas */
+        #unity-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <canvas id="unity-canvas"></canvas>
-
+    <div id="unity-container">
+        <div id="unity-canvas-container">
+            <canvas id="unity-canvas"></canvas>
+        </div>
+    </div>
     <script>
         var buildUrl = "Build";
         var loaderUrl = buildUrl + "/Test13.loader.js";
@@ -53,24 +61,23 @@
         script.src = loaderUrl;
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
-                // Optional: Show loading if you want
+                // You can add a loading bar here if needed
             }).then((instance) => {
                 unityInstance = instance;
 
-                // Try launching into AR automatically after load
+                // 🔥 Auto-enter AR mode after slight delay
                 setTimeout(() => {
                     try {
                         unityInstance.Module.WebXR.toggleAR();
                     } catch (err) {
                         console.warn("AR failed to launch automatically:", err);
                     }
-                }, 500); // Wait a moment before launching AR
+                }, 500);
             }).catch((message) => {
-                alert("Unity load error: " + message);
+                alert(message);
             });
         };
         document.body.appendChild(script);
     </script>
 </body>
 </html>
-
