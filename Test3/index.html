@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | ammonite story</title>
-    <meta name="description" content="" />
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
-    <link rel="stylesheet" href="TemplateData/style.css" />
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-        html, body {
+        body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: black;
+            overflow: hidden;
         }
 
         #unity-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            background: black;
         }
 
         #unity-canvas {
             width: 100% !important;
             height: 100% !important;
             display: block;
-            background: #000;
         }
 
-        #unity-footer,
-        #entervr,
-        #enterar,
-        #unity-webgl-logo,
-        #unity-webxr-link,
-        #unity-build-title {
-            display: none !important;
+        #unity-loading-bar {
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+
+        #unity-progress-bar-empty {
+            width: 50%;
+            margin: 0 auto;
+            height: 10px;
+            background: #555;
+        }
+
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 10px;
+            background: #fff;
+        }
+
+        #unity-footer {
+            display: none;
         }
     </style>
 </head>
@@ -53,7 +72,6 @@
                 <div id="unity-progress-bar-full"></div>
             </div>
         </div>
-        <div id="unity-footer"></div>
     </div>
 
     <script>
@@ -72,7 +90,6 @@
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
         var progressBarFull = document.querySelector("#unity-progress-bar-full");
-
         var unityInstance = null;
 
         loadingBar.style.display = "block";
@@ -84,25 +101,16 @@
                 progressBarFull.style.width = 100 * progress + "%";
             }).then((instance) => {
                 unityInstance = instance;
-
-                setTimeout(() => {
-                    try {
-                        unityInstance.Module.WebXR.toggleAR();
-                    } catch (err) {
-                        console.warn("AR failed to launch automatically:", err);
-                    }
-                }, 500);
-
                 loadingBar.style.display = "none";
 
-                // 💥 Auto launch AR after short delay
+                // Delay AR auto-start slightly to ensure everything is ready
                 setTimeout(() => {
                     try {
                         unityInstance.Module.WebXR.toggleAR();
                     } catch (err) {
-                        console.warn("Auto AR failed:", err);
+                        console.warn("Auto-launch AR failed:", err);
                     }
-                }, 500);
+                }, 1000); // 1 second buffer after load
             }).catch((message) => {
                 alert(message);
             });
