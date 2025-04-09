@@ -4,56 +4,42 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | ammonite story</title>
-    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
-        body, html {
+        html, body {
             margin: 0;
             padding: 0;
-            width: 100%;
             height: 100%;
-            background: black;
             overflow: hidden;
+            background: black;
         }
 
         #unity-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: fixed;
             top: 0;
             left: 0;
-            background: black;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #unity-canvas {
-            width: 100% !important;
-            height: 100% !important;
+            width: 100%;
+            height: 100%;
             display: block;
+            background: black;
         }
 
         #unity-loading-bar {
-            width: 100%;
             position: absolute;
             top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-        }
-
-        #unity-progress-bar-empty {
-            width: 50%;
-            margin: 0 auto;
-            height: 10px;
-            background: #555;
-        }
-
-        #unity-progress-bar-full {
-            width: 0%;
-            height: 10px;
-            background: #fff;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
         }
 
         #unity-footer {
@@ -63,9 +49,7 @@
 </head>
 <body>
     <div id="unity-container">
-        <div id="unity-canvas-container">
-            <canvas id="unity-canvas"></canvas>
-        </div>
+        <canvas id="unity-canvas"></canvas>
         <div id="unity-loading-bar">
             <div id="unity-logo"></div>
             <div id="unity-progress-bar-empty">
@@ -103,14 +87,17 @@
                 unityInstance = instance;
                 loadingBar.style.display = "none";
 
-                // Delay AR auto-start slightly to ensure everything is ready
+                // Auto-enter fullscreen
+                unityInstance.SetFullscreen(1);
+
+                // Auto-enter AR
                 setTimeout(() => {
                     try {
                         unityInstance.Module.WebXR.toggleAR();
                     } catch (err) {
-                        console.warn("Auto-launch AR failed:", err);
+                        console.warn("Auto AR failed:", err);
                     }
-                }, 1000); // 1 second buffer after load
+                }, 500);
             }).catch((message) => {
                 alert(message);
             });
