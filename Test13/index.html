@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | ammonite story</title>
     <meta name="description" content="">
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
+    <style>
+        #unity-footer {
+            display: none;
+        }
+    </style>
+
+</head>
   <body>
     <div id="unity-container">
       <div id="unity-canvas-container">
@@ -49,8 +55,14 @@
       var unityInstance = null;
       
 
-      canvasContainer.style.width = "960px";
-      canvasContainer.style.height = "600px";
+        canvasContainer.style.width = "100%";
+        canvasContainer.style.height = "100%";
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "absolute";
+        canvas.style.top = "0";
+        canvas.style.left = "0";
+
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
@@ -60,7 +72,9 @@
           progressBarFull.style.width = 100 * progress + "%";
         }).then((instance) => {
           unityInstance = instance;
-          loadingBar.style.display = "none";
+            loadingBar.style.display = "none";
+            unityInstance.Module.WebXR.toggleAR(); // Auto-enter AR
+
           if (fullscreenButton)
           {
             fullscreenButton.onclick = () => {
