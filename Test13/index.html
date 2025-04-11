@@ -53,18 +53,22 @@
         script.src = loaderUrl;
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
-                // Optional: Show loading if you want
+                // Optional: Show loading progress
             }).then((instance) => {
                 unityInstance = instance;
 
-                // Try launching into AR automatically after load
-                setTimeout(() => {
-                    try {
+                // AR launch loop: wait until it's supported before toggling
+                const tryLaunchAR = () => {
+                    if (unityInstance.Module.WebXR && unityInstance.Module.WebXR.isARSupported()) {
+                        console.log("✅ AR supported, launching AR");
                         unityInstance.Module.WebXR.toggleAR();
-                    } catch (err) {
-                        console.warn("AR failed to launch automatically:", err);
+                    } else {
+                        console.warn("⏳ AR not ready yet, retrying...");
+                        setTimeout(tryLaunchAR, 200);
                     }
-                }, 500); // Wait a moment before launching AR
+                };
+
+                tryLaunchAR();
             }).catch((message) => {
                 alert("Unity load error: " + message);
             });
@@ -73,4 +77,3 @@
     </script>
 </body>
 </html>
-
