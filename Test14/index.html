@@ -26,6 +26,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
       }
 
       #unity-canvas-container {
@@ -49,6 +50,25 @@
         position: absolute;
         width: 100%;
         bottom: 20px;
+        z-index: 10;
+      }
+
+      #start-ar-button {
+        position: absolute;
+        z-index: 20;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        font-size: 16px;
+        background-color: #ffffffaa;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      #start-ar-button.hidden {
+        display: none;
       }
     </style>
   </head>
@@ -57,12 +77,15 @@
       <div id="unity-canvas-container">
         <canvas id="unity-canvas"></canvas>
       </div>
+
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
+
+      <button id="start-ar-button" class="hidden">Start AR</button>
     </div>
 
     <script>
@@ -82,6 +105,7 @@
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var unityInstance = null;
+      var startARButton = document.getElementById("start-ar-button");
 
       loadingBar.style.display = "block";
 
@@ -93,11 +117,18 @@
         }).then((instance) => {
           unityInstance = instance;
           loadingBar.style.display = "none";
+          startARButton.classList.remove("hidden");
         }).catch((message) => {
           alert(message);
         });
       };
       document.body.appendChild(script);
+
+      startARButton.addEventListener("click", function () {
+        if (unityInstance && unityInstance.Module && unityInstance.Module.WebXR) {
+          unityInstance.Module.WebXR.toggleAR();
+        }
+      });
     </script>
   </body>
 </html>
