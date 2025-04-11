@@ -53,22 +53,29 @@
         script.src = loaderUrl;
         script.onload = () => {
             createUnityInstance(canvas, config, (progress) => {
-                // Optional: Show loading progress
+                // Loading progress handler if needed
             }).then((instance) => {
                 unityInstance = instance;
 
-                // AR launch loop: wait until it's supported before toggling
-                const tryLaunchAR = () => {
-                    if (unityInstance.Module.WebXR && unityInstance.Module.WebXR.isARSupported()) {
-                        console.log("✅ AR supported, launching AR");
-                        unityInstance.Module.WebXR.toggleAR();
-                    } else {
-                        console.warn("⏳ AR not ready yet, retrying...");
-                        setTimeout(tryLaunchAR, 200);
-                    }
-                };
+                // ✅ Check for AR support before trying to launch AR
+                if ('xr' in navigator) {
+                    navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
+                        if (supported) {
+                            setTimeout(() => {
+                                try {
+                                    unityInstance.Module.WebXR.toggleAR();
+                                } catch (err) {
+                                    console.warn("AR failed to launch automatically:", err);
+                                }
+                            }, 500);
+                        } else {
+                            console.warn("AR not supported on this device.");
+                        }
+                    });
+                } else {
+                    console.warn("WebXR not available in this browser.");
+                }
 
-                tryLaunchAR();
             }).catch((message) => {
                 alert("Unity load error: " + message);
             });
@@ -77,3 +84,4 @@
     </script>
 </body>
 </html>
+
